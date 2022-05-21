@@ -23,17 +23,8 @@
 #include "rand64-hw.h"
 #include "rand64-sw.h"
 #include "output.h"
+#include "options.h"
 
-enum input { RDRAND, MRAND48_R, F };
-enum output { STDOUT, N };
-
-struct options {
-  bool valid;
-  long long nbytes;
-  enum input input;
-  enum output output;
-  unsigned int block_size;
-};
 
 
 /* Main program, which outputs N bytes of random data.  */
