@@ -1,9 +1,9 @@
 # Optimization level.  Change this -O2 to -Og or -O0 or whatever.
-OPTIMIZE =
+OPTIMIZE = -Og
 
 # The C compiler and its options.
 CC = gcc
-CFLAGS = $(OPTIMIZE) -g3 -Wall -Wextra -fanalyzer \
+CFLAGS = $(OPTIMIZE) -g3 -Wall -Wextra \
   -march=native -mtune=native -mrdrnd
 
 # The archiver command, its options and filename extension.
@@ -13,11 +13,11 @@ TAREXT = tgz
 
 default: randall
 
-randall: randall.c
-	$(CC) $(CFLAGS) $@.c -o $@
+randall: randall.c rand64-hw.c rand64-sw.c
+	$(CC) $(CFLAGS) $@.c rand64-hw.c rand64-sw.c -o $@
 
 assignment: randall-assignment.$(TAREXT)
-assignment-files = COPYING Makefile randall.c
+assignment-files = COPYING Makefile randall.c rand64-hw.c rand64-hw.h rand64-sw.c rand64-sw.h
 randall-assignment.$(TAREXT): $(assignment-files)
 	$(TAR) $(TARFLAGS) -cf $@ $(assignment-files)
 
