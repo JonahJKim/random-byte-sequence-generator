@@ -36,5 +36,5 @@ clean:
 	rm -f *.o *.$(TAREXT) randall
 
 check:
-	@./randall 50 | wc -c 
+	@./randall -i rdrand -o stdio 50 | wc -c 
 

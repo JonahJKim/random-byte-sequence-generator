@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-
 #include <unistd.h>
 
 #include "rand64-hw.h"
@@ -32,62 +31,10 @@ int main (int argc, char **argv) {
   if (argc < 2)
     return 1;
 
+
   struct options options;
-  int opt;
-  while ((opt = getopt(argc, argv, ":i:o:")) != -1) {
-    switch (opt) {
-      case 'i':
-        if (strcmp("rdrand", optarg) == 0) {
-          options.input = RDRAND;
-        }
-        else if (strcmp("mrand48_r", optarg) == 0) {
-          options.input = MRAND48_R;
-        }
-        else if ('/' == optarg[0]) {
-          options.input = F;
-        }
-        else {
-          fprintf(stderr, "Invalid Option. Choose between rdrand, mrand48_r, and /FILE");
-          return 1;
-        }
-        options.valid = true;
-        break;
-
-      case 'o':
-        if (strcmp("stdio", optarg) == 0) {
-          options.output = STDOUT;
-        }
-        else if (!isdigit(optarg[0])) {
-          fprintf(stderr, "Must either be stdio or a digit!");
-          return 1;
-        }
-        else {
-          options.output = N;
-          options.block_size = atoi(optarg);
-          if (options.block_size < 1) {
-            fprintf(stderr, "Not a valid block size!\n");
-            return 1;
-          }
-        }
-        options.valid = true;
-        break;
-
-      case ':':
-        printf("option needs a value!\n");
-        return 1;
-      case '?':
-        printf("unknown option: %c\n", optopt);
-        return 1;
-    }
-
-  }
-  if (optind >= argc) {
-    return 1;
-  }
-  long long nbytes = atol(argv[optind]);
-
-
-
+  opt_func(argc, argv, &options);
+  
 
   /* Check arguments.  */
 
@@ -102,16 +49,15 @@ int main (int argc, char **argv) {
       else
 	valid = !*endptr && 0 <= nbytes;
     }
-  
-  if (!valid)
+  */
+  if (!options.valid)
     {
       fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
       return 1;
     }
-  */
 
   /* If there's no work to do, don't worry about which library to use.  */
-  if (nbytes == 0)
+  if (options.nbytes == 0)
     return 0;
 
   /* Now that we know we have work to do, arrange to use the
@@ -139,15 +85,15 @@ int main (int argc, char **argv) {
   do
     {
       unsigned long long x = rand64 ();
-      int outbytes = nbytes < wordsize ? nbytes : wordsize;
+      int outbytes = options.nbytes < wordsize ? options.nbytes : wordsize;
       if (!writebytes (x, outbytes))
 	{
 	  output_errno = errno;
 	  break;
 	}
-      nbytes -= outbytes;
+      options.nbytes -= outbytes;
     }
-  while (0 < nbytes);
+  while (0 < options.nbytes);
 
   if (fclose (stdout) != 0)
     output_errno = errno;
