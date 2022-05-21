@@ -18,21 +18,7 @@
 
 #include "rand64-hw.h"
 #include "rand64-sw.h"
-
-static bool
-writebytes (unsigned long long x, int nbytes)
-{
-  do
-    {
-      if (putchar (x) < 0)
-	return false;
-      x >>= CHAR_BIT;
-      nbytes--;
-    }
-  while (0 < nbytes);
-
-  return true;
-}
+#include "output.h"
 
 /* Main program, which outputs N bytes of random data.  */
 int

@@ -13,8 +13,8 @@ TAREXT = tgz
 
 default: randall
 
-randall: randall.c rand64-hw.c rand64-sw.c
-	$(CC) $(CFLAGS) $@.c rand64-hw.c rand64-sw.c -o $@
+randall: randall.c rand64-hw.c rand64-sw.c output.c
+	$(CC) $(CFLAGS) $@.c rand64-hw.c rand64-sw.c output.c -o $@
 
 assignment: randall-assignment.$(TAREXT)
 assignment-files = COPYING Makefile randall.c rand64-hw.c rand64-hw.h rand64-sw.c rand64-sw.h
