@@ -15,18 +15,92 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#include <unistd.h>
 
 #include "rand64-hw.h"
 #include "rand64-sw.h"
 #include "output.h"
 
-/* Main program, which outputs N bytes of random data.  */
-int
-main (int argc, char **argv)
-{
-  /* Check arguments.  */
-  bool valid = false;
+enum input { RDRAND, MRAND48_R, F };
+enum output { STDOUT, N };
+
+struct options {
+  bool valid;
   long long nbytes;
+  enum input input;
+  enum output output;
+  unsigned int block_size;
+};
+
+
+/* Main program, which outputs N bytes of random data.  */
+int main (int argc, char **argv) {
+  if (argc < 2)
+    return 1;
+
+  struct options options;
+  int opt;
+  while ((opt = getopt(argc, argv, ":i:o:")) != -1) {
+    switch (opt) {
+      case 'i':
+        if (strcmp("rdrand", optarg) == 0) {
+          options.input = RDRAND;
+        }
+        else if (strcmp("mrand48_r", optarg) == 0) {
+          options.input = MRAND48_R;
+        }
+        else if ('/' == optarg[0]) {
+          options.input = F;
+        }
+        else {
+          fprintf(stderr, "Invalid Option. Choose between rdrand, mrand48_r, and /FILE");
+          return 1;
+        }
+        options.valid = true;
+        break;
+
+      case 'o':
+        if (strcmp("stdio", optarg) == 0) {
+          options.output = STDOUT;
+        }
+        else if (!isdigit(optarg[0])) {
+          fprintf(stderr, "Must either be stdio or a digit!");
+          return 1;
+        }
+        else {
+          options.output = N;
+          options.block_size = atoi(optarg);
+          if (options.block_size < 1) {
+            fprintf(stderr, "Not a valid block size!\n");
+            return 1;
+          }
+        }
+        options.valid = true;
+        break;
+
+      case ':':
+        printf("option needs a value!\n");
+        return 1;
+      case '?':
+        printf("unknown option: %c\n", optopt);
+        return 1;
+    }
+
+  }
+  if (optind >= argc) {
+    return 1;
+  }
+  long long nbytes = atol(argv[optind]);
+
+
+
+
+  /* Check arguments.  */
+
+  /*
   if (argc == 2)
     {
       char *endptr;
@@ -37,11 +111,13 @@ main (int argc, char **argv)
       else
 	valid = !*endptr && 0 <= nbytes;
     }
+  
   if (!valid)
     {
       fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
       return 1;
     }
+  */
 
   /* If there's no work to do, don't worry about which library to use.  */
   if (nbytes == 0)
