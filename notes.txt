@@ -1,0 +1,12 @@
+
+
+
+
+16384+0 records in
+16384+0 records out
+134217728 bytes transferred in 0.421371 secs (318526258 bytes/sec)
+dd if=/dev/urandom ibs=8192 obs=8192 count=16384 > /dev/null  0.01s user 0.42s system 99% cpu 0.424 total
+./randall 133562368 > /dev/null  7.05s user 0.00s system 99% cpu 7.052 total
+./randall 133562368  6.90s user 0.01s system 99% cpu 6.908 total
+cat > /dev/null  0.01s user 0.06s system 0% cpu 6.907 total
+./randall 133562368 > rand.data  6.95s user 0.15s system 94% cpu 7.495 total

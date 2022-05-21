@@ -1,7 +1,3 @@
-#include <cpuid.h>
-#include <errno.h>
-#include <immintrin.h>
-#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +13,7 @@ void opt_func(int argc, char **argv, struct options *options) {
   // default values
   options->input = RDRAND;
   options->output = STDOUT;
+  options->valid = false;
 
   while ((opt = getopt(argc, argv, ":i:o:")) != -1) {
     switch (opt) {
@@ -70,4 +67,6 @@ void opt_func(int argc, char **argv, struct options *options) {
     return;
   }
   options->nbytes = atol(argv[optind]);
+  if (options->nbytes > 0)
+    options->valid = true;
 }

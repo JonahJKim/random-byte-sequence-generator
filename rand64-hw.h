@@ -1,14 +1,6 @@
 #ifndef RAND64
 #define RAND64
 
-#include <cpuid.h>
-#include <errno.h>
-#include <immintrin.h>
-#include <limits.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 /* Description of the current CPU.  */
 /*struct cpuid { unsigned eax, ebx, ecx, edx; };*/
 

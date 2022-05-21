@@ -10,13 +10,10 @@
 
 #include <cpuid.h>
 #include <errno.h>
-#include <immintrin.h>
-#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <string.h>
 #include <unistd.h>
 
 #include "rand64-hw.h"
@@ -28,6 +25,7 @@
 
 /* Main program, which outputs N bytes of random data.  */
 int main (int argc, char **argv) {
+  
   if (argc < 2)
     return 1;
 
@@ -35,21 +33,6 @@ int main (int argc, char **argv) {
   struct options options;
   opt_func(argc, argv, &options);
   
-
-  /* Check arguments.  */
-
-  /*
-  if (argc == 2)
-    {
-      char *endptr;
-      errno = 0;
-      nbytes = strtoll (argv[1], &endptr, 10);
-      if (errno)
-	perror (argv[1]);
-      else
-	valid = !*endptr && 0 <= nbytes;
-    }
-  */
   if (!options.valid)
     {
       fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
@@ -129,7 +112,7 @@ int main (int argc, char **argv) {
       options.nbytes -= outbytes;
     }
     while (0 < options.nbytes);
-    
+
     free(cbuffer);
     }
 
