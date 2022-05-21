@@ -1,7 +1,20 @@
+Procedure:
+- Open tarball, clone, put source code in
+- Create notes.txt ($touch notes.txt)
+- Read Makefile and randall.c
+- Add make check by printing out and counting number of lines
+- Split program into sections (everything is before the main section, so easy to locate)
+- Get rid of additional header files that I don't need (copy and pasted before)
+- Modify Makefile to accomodate new files
+- Add options using getopt (research)
+- Start with input option by creating a struct "options" with all the information regarding options like input/output source
+- Proceed to output options
+- Finish all the options and proceed to buffer
+- Add buffer for N
+- Git add, commit, push to GitHub repo
 
 
-
-
+Test Results:
 16384+0 records in
 16384+0 records out
 134217728 bytes transferred in 0.421371 secs (318526258 bytes/sec)

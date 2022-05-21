@@ -96,18 +96,19 @@ int main (int argc, char **argv) {
     }
   }
   else if (options.output == N) {
-    unsigned int total_bytes = options.block_size * 1000;
-    char *cbuffer = malloc(options.block_size * 1000);
+    unsigned int total_bytes = options.block_size * 500;
+    char *cbuffer = malloc(options.block_size * 500);
     do {
       int outbytes = options.nbytes < total_bytes ? options.nbytes : total_bytes;
       unsigned long long counter;
       for (int i = 0; i < outbytes; i += sizeof(counter)) {
         counter = rand64();
         for (size_t j = 0; j < sizeof(counter); j++) {
-          unsigned char chunk = *((unsigned char*)&counter + j);
+          unsigned char chunk = *(j + (unsigned char*)&counter);
           cbuffer[i + j] = chunk;
         }
       }
+      
       write(1, cbuffer, outbytes);
       options.nbytes -= outbytes;
     }
