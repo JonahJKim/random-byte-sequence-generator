@@ -92,26 +92,45 @@ int main (int argc, char **argv) {
   int wordsize = sizeof rand64 ();
   int output_errno = 0;
 
-  do
-    {
-      unsigned long long x = rand64 ();
-      int outbytes = options.nbytes < wordsize ? options.nbytes : wordsize;
-      if (!writebytes (x, outbytes))
-	{
-	  output_errno = errno;
-	  break;
-	}
-      options.nbytes -= outbytes;
-    }
-  while (0 < options.nbytes);
+  if (options.output == STDOUT) {
+    do {
+        unsigned long long x = rand64 ();
+        int outbytes = options.nbytes < wordsize ? options.nbytes : wordsize;
+        if (!writebytes (x, outbytes)) {
+          output_errno = errno;
+          break;
+        }
+        options.nbytes -= outbytes;
+      }
+    while (0 < options.nbytes);
 
-  if (fclose (stdout) != 0)
-    output_errno = errno;
+    if (fclose (stdout) != 0)
+      output_errno = errno;
 
-  if (output_errno)
-    {
+    if (output_errno) {
       errno = output_errno;
       perror ("output");
+    }
+  }
+  else if (options.output == N) {
+    unsigned int total_bytes = options.block_size * 1000;
+    char *cbuffer = malloc(options.block_size * 1000);
+    do {
+      int outbytes = options.nbytes < total_bytes ? options.nbytes : total_bytes;
+      unsigned long long counter;
+      for (int i = 0; i < outbytes; i += sizeof(counter)) {
+        counter = rand64();
+        for (size_t j = 0; j < sizeof(counter); j++) {
+          unsigned char chunk = *((unsigned char*)&counter + j);
+          cbuffer[i + j] = chunk;
+        }
+      }
+      write(1, cbuffer, outbytes);
+      options.nbytes -= outbytes;
+    }
+    while (0 < options.nbytes);
+    
+    free(cbuffer);
     }
 
   finalize ();
