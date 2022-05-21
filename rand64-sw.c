@@ -13,13 +13,20 @@
 /* Input stream containing random bytes.  */
 FILE *urandstream;
 
+void initialize_file(char* file) {
+    urandstream = fopen(file, "r");
+    if (!urandstream) {
+        fprintf(stderr, "Invalid file!");
+        abort();
+    }
+}
+
 /* Initialize the software rand64 implementation.  */
 void
 software_rand64_init (void)
 {
-  urandstream = fopen ("/dev/random", "r");
-  if (! urandstream)
-    abort ();
+    if (urandstream == NULL)
+        initialize_file("/dev/random");
 }
 
 /* Return a random value, using software operations.  */

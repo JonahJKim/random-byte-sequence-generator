@@ -65,18 +65,28 @@ int main (int argc, char **argv) {
   void (*initialize) (void);
   unsigned long long (*rand64) (void);
   void (*finalize) (void);
-  if (rdrand_supported ())
+  if (rdrand_supported () && options.input == RDRAND)
     {
       initialize = hardware_rand64_init;
       rand64 = hardware_rand64;
       finalize = hardware_rand64_fini;
     }
-  else
+  else if (options.input == MRAND48_R)
     {
       initialize = software_rand64_init;
       rand64 = software_rand64;
       finalize = software_rand64_fini;
     }
+  else if (options.input == F) {
+      initialize_file(options.file);
+      initialize = software_rand64_init;
+      rand64 = software_rand64;
+      finalize = software_rand64_fini;
+  }
+  else {
+    fprintf(stderr, "no input");
+    return 1;
+  }
 
   initialize ();
   int wordsize = sizeof rand64 ();
